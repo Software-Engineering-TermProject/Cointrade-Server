@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>업비투</title>
+    <link href="static/img/main_logo_32.png" rel="icon" />
+    <link href="static/css/style.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.28.1/dist/apexcharts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="header-wrapper">
+        <div class="logo">
+          <a href="/">
+            <img src="static/img/main_logo_32.png" alt="업비투 로고" />
+            업비투
+          </a>
+        </div>
+        <div class="user-info">
+          <a href="#">
+            <img src="static/img/user_32.png" alt="유저 이미지" />
+          </a>
+        </div>
+        <div class="login-button">
+          {%if userid%}
+          <a href="/logout">로그아웃</a>
+          {%else%}
+          <a href="/login">로그인</a>
+          {%endif%}
+        </div>
+        <div class="login-button">
+          <a href="/market">코인 거래</a>
+        </div>
+      </div>
+    </header>
+    <div class="container">
+      <div class="dashboard">
+        <div class="chart">
+          <div id="chart"></div>
+        </div>
+        <div class="coin-list">
+          <table>
+            <thead>
+              <tr>
+                <th>코인명</th>
+                <th>현재가</th>
+                <th>전일대비</th>
+                <th>거래금액</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>비트코인</td>
+                <td>63,514,000원</td>
+                <td>+2.34%</td>
+                <td>1,234,567,890원</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <script>
+      var options = {
+        series: [
+          {
+            name: "Bitcoin",
+            data: [44, 55, 41, 67, 22, 43, 21, 49],
+          },
+        ],
+        chart: {
+          height: 350,
+          type: "line",
+        },
+        stroke: {
+          width: 7,
+          curve: "smooth",
+        },
+        xaxis: {
+          type: "datetime",
+          categories: [
+            "2019-01-01",
+            "2019-01-02",
+            "2019-01-03",
+            "2019-01-04",
+            "2019-01-05",
+            "2019-01-06",
+            "2019-01-07",
+            "2019-01-08",
+          ],
+        },
+        yaxis: {
+          min: 0,
+          max: 120,
+          title: {
+            text: "가격(단위:만원)",
+          },
+        },
+        legend: {
+          position: "top",
+          horizontalAlign: "right",
+          floating: true,
+          offsetY: -25,
+          offsetX: -5,
+        },
+      };
+
+      var chart = new ApexCharts(document.querySelector("#chart"), options);
+      chart.render();
+    </script>
+    <footer>
+      Software Engineering and Practice Team_6 <br />여재우 김동재
+    </footer>
+  </body>
+</html>
