@@ -7,6 +7,15 @@
     <link href="static/css/style.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.28.1/dist/apexcharts.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+    <style>
+      .apexcharts-tooltip {
+        color: #000000;
+      }
+      a {
+        color: white;
+        text-decoration: none;
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -39,25 +48,8 @@
         <div class="chart">
           <div id="chart"></div>
         </div>
-        <div class="coin-list">
-          <table>
-            <thead>
-              <tr>
-                <th>코인명</th>
-                <th>현재가</th>
-                <th>전일대비</th>
-                <th>거래금액</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>비트코인</td>
-                <td>63,514,000원</td>
-                <td>+2.34%</td>
-                <td>1,234,567,890원</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="mypage">
+          <div id="userInfoContainer"></div>
         </div>
       </div>
     </div>
@@ -89,12 +81,25 @@
             "2019-01-07",
             "2019-01-08",
           ],
+          labels: {
+            style: {
+              colors: "#f8f8f2",
+            },
+          },
         },
         yaxis: {
           min: 0,
           max: 120,
           title: {
             text: "가격(단위:만원)",
+            style: {
+              color: "#f8f8f2",
+            },
+          },
+          labels: {
+            style: {
+              colors: "#f8f8f2",
+            },
           },
         },
         legend: {
@@ -103,11 +108,28 @@
           floating: true,
           offsetY: -25,
           offsetX: -5,
+          labels: {
+            colors: "#f8f8f2",
+          },
         },
       };
 
       var chart = new ApexCharts(document.querySelector("#chart"), options);
       chart.render();
+
+      var isLoggedIn = false;
+
+      function displayContent() {
+        var userInfoContainer = document.getElementById("userInfoContainer");
+
+        if (isLoggedIn) {
+          userInfoContainer.innerHTML = "계정 정보를 보여주는 내용";
+        } else {
+          userInfoContainer.innerHTML =
+            "<a href='/login'>로그인</a>을 해주세요.";
+        }
+      }
+      displayContent();
     </script>
     <footer>
       Software Engineering and Practice Team_6 <br />여재우 김동재
