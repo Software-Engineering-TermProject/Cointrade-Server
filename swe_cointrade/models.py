@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -9,13 +10,14 @@ class User(db.Model):
     userid = db.Column(db.String(32), unique=True, nullable=False)      
     username = db.Column(db.String(8), nullable=False)
     password = db.Column(db.String(8), nullable=False)     
-
-    #def __init__(self, username, password):
-    #    self.set_username(username)
-    #    self.set_password(password)
+    account_balance = db.Column(db.Float, default=0.0)
+    coin_count = db.Column(db.Float, default=0.0)
     
-    #def set_password(self, password):
-    #    self.password = generate_password_hash(password)
- 
-    #def check_password(self, password):
-    #    return check_password_hash(self.password, password)
+class Post(db.Model):
+    __tablename__ = 'post'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    author = db.Column(db.String(32), nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow)

@@ -36,6 +36,11 @@
         border-radius: 3px;
         cursor: pointer;
       }
+      .new-post-link {
+        float: right;
+        margin-top: 10px;
+        margin-right: 10px;
+      }
     </style>
   </head>
   <body>
@@ -52,19 +57,19 @@
             <img src="static/img/user_32.png" alt="유저 이미지" />
           </a>
         </div>
-        <div class="login-button">
-          <a href="/login">로그인</a>
-        </div>
+        <a class="new-post-link" href="/post">게시물 작성</a>
       </div>
     </header>
     <div class="container">
+      {% for post in posts %}
       <div class="post">
-        <h3>삽니다</h3>
-        <p>Post Content</p>
-        <p>Posted by: John Doe</p>
-        <p>Date: May 8, 2023</p>
+        <h3>{{ post.title }}</h3>
+        <p>{{ post.content }}</p>
+        <p>Posted by: {{ post.author }}</p>
+        <p>Date: {{ post.date }}</p>
         <a href="/"><button class="buy-botton">사기</button></a>
       </div>
+      {% endfor %}
     </div>
     <footer>
       Software Engineering and Practice Team_6 <br />여재우 김동재
