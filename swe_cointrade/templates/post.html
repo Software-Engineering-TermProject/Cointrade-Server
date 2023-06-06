@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>게시물 작성</title>
+    <link rel="stylesheet" href="static/css/style.css" />
+    <style>
+      .post-form {
+        background-color: #44475a;
+        padding: 20px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 400px;
+        margin: 20px auto;
+      }
+      .post-form h3 {
+        margin-top: 0;
+      }
+      .post-form input[type="text"],
+      .post-form textarea {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+      }
+      .post-form button {
+        background-color: #2ecc71;
+        color: #f8f8f2;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+      .cancel-button {
+        background-color: red;
+        color: #f8f8f2;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+      .form-buttons {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 10px;
+      }
+      .form-buttons button:first-child {
+        margin-right: 10px;
+      }
+    </style>
+    <script>
+      function cancelPost() {
+        window.location.href = '/market';
+      }
+    </script>
+  </head>
+  <body>
+    <div class="post-form">
+      <h3>게시물 작성</h3>
+      <form action="/post" method="POST">
+        {{ form.csrf_token }}
+        <div>
+          <label for="title">제목</label>
+          <input type="text" name="title" id="title" required />
+        </div>
+        <div>
+          <label for="content">내용</label>
+          <textarea name="content" id="content" rows="4" required></textarea>
+        </div>
+        <div class="form-buttons">
+          <button type="submit">게시하기</button>
+          <button class="cancel-button" onclick="cancelPost()">취소하기</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

@@ -1,9 +1,9 @@
 import os
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from models import db, User
+from models import Post, db, User
 from flask_wtf.csrf import CSRFProtect
-from Forms import RegisterForm, LoginForm
+from Forms import PostForm, RegisterForm, LoginForm
 
 app = Flask(__name__)
 
@@ -46,11 +46,56 @@ def logout():
     session.pop('userid', None)
     return redirect('/')
 
+#마이페이지
+@app.route('/mypage', methods=['GET'])
+def mypage():
+    userid = session.get('userid', None)
+    return render_template('mypage.html', userid=userid)
 
-@app.route('/market')
+#마이페이지 상세정보
+@app.route('/getMyInfo', methods=['GET'])
+def getMyInfo():
+    userid = session.get('userid', None)
+    if not userid: # 로그인 x인 경우
+        return jsonify({'error': 'Not logged in'}), 401
+    
+    user = User.query.filter_by(userid=userid).first()
+    if user is None: # 유저가 db에 없는 경우
+        return jsonify({'error': 'User not found'}), 404
+    
+    info = {
+            'username': user.username,
+            'account_balance': user.account_balance,  # 계좌 잔고
+            'coin_count': user.coin_count,  # 보유 코인 수
+            'coin_price': 100,  # 코인 가격
+            'estimated_assets': user.account_balance + (user.coin_count * 100)  # 추정 자산
+    }
+    
+    return jsonify(info)
+
+# 마켓 페이지
+@app.route('/market', methods=['GET'])
 def market_page():
-    return render_template('market.html')
+    userid = session.get('userid', None)
+    posts = Post.query.all()
+    return render_template('market.html', userid=userid, posts=posts)    
 
+# 게시물 작성
+@app.route('/post', methods=['GET', 'POST'])
+def create_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post()
+        post.title = form.data.get('title')
+        post.content = form.data.get('content')
+        post.author = session.get('userid')  # 작성자 정보 추가
+
+        db.session.add(post)
+        db.session.commit()
+
+        return redirect('/market')
+
+    return render_template('post.html', form=form)
 
 if __name__ == "__main__":
     basedir = os.path.abspath(os.path.dirname(__file__))  
@@ -61,7 +106,7 @@ if __name__ == "__main__":
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False   
     app.config['SECRET_KEY']='asdfasdfasdfqwertx' #임의로 해시값 적용
 
-    csrf = CSRFProtect()
+    csrf = CSRFProtect(app)
     csrf.init_app(app)
 
     db.init_app(app)
