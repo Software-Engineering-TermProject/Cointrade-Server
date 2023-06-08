@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, PasswordField
+from wtforms import StringField, TextAreaField, PasswordField, IntegerField
 from wtforms.validators import DataRequired, EqualTo
 from models import User
 
@@ -28,3 +28,6 @@ class LoginForm(FlaskForm):
 class PostForm(FlaskForm):
     title = StringField('title', validators=[DataRequired()])
     content = TextAreaField('content', validators=[DataRequired()])
+    
+class DepositForm(FlaskForm):
+    account_balance = IntegerField('account_balance', validators=[DataRequired()])

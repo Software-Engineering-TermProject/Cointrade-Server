@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>입금</title>
+    <link rel="stylesheet" href="static/css/style.css" />
+    <script>
+      function cancelDeposit() {
+        window.location.href = '/mypage';
+      }
+    </script>
+  </head>
+  <body>
+    <div class="deposit-form">
+      <h3>입금</h3>
+      <form action="/deposit" method="POST">
+        {{ form.csrf_token }}
+        <div>
+          <label for="depositAmount">입금 금액:</label><br>
+          <input type="number" id="account_balance" name="account_balance" required ><br>
+        </div>
+        <div class="form-buttons">
+          <button type="submit">입금하기</button>
+          <button type="button" class="cancel-button" onclick="cancelDeposit()">닫기</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
