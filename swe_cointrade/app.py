@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from models import Post, db, User
 from flask_wtf.csrf import CSRFProtect
-from Forms import PostForm, RegisterForm, LoginForm
+from Forms import PostForm, RegisterForm, LoginForm, DepositForm
 
 app = Flask(__name__)
 
@@ -50,7 +50,11 @@ def logout():
 @app.route('/mypage', methods=['GET'])
 def mypage():
     userid = session.get('userid', None)
-    return render_template('mypage.html', userid=userid)
+    if not userid:  # 로그인되어 있지 않은 경우
+        return redirect('/login')
+    
+    users = User.query.all()
+    return render_template('mypage.html', userid=userid, users=users)
 
 #마이페이지 상세정보
 @app.route('/getMyInfo', methods=['GET'])
@@ -73,12 +77,35 @@ def getMyInfo():
     
     return jsonify(info)
 
+#입금
+@app.route('/deposit', methods=['GET', 'POST'])
+def deposit():
+    userid = session.get('userid', None)
+    
+    form = DepositForm()
+    if form.validate_on_submit():
+        if not userid:
+            return redirect('/login')
+        
+        user = User.query.filter_by(userid=userid).first()
+        
+        if user.account_balance is None:  # account_balance가 None인 경우 초기값 설정
+            user.account_balance = 0
+        user.account_balance += form.data.get('account_balance')
+
+        db.session.commit()
+
+        return redirect('/mypage')
+    
+    return render_template('deposit.html', form=form, userid=userid)
+
+
 # 마켓 페이지
 @app.route('/market', methods=['GET'])
 def market_page():
     userid = session.get('userid', None)
     posts = Post.query.all()
-    return render_template('market.html', userid=userid, posts=posts)    
+    return render_template('market.html', posts=posts)    
 
 # 게시물 작성
 @app.route('/post', methods=['GET', 'POST'])
@@ -97,6 +124,21 @@ def create_post():
 
     return render_template('post.html', form=form)
 
+# 게시물 삭제
+@app.route('/post/<int:post_id>/delete', methods=['POST'])
+def delete_post(post_id):
+    userid = session.get('userid', None)
+    if not userid:
+        return redirect('/')  # 유저가 로그인하지 않은 상태라면 메인 페이지로 리다이렉트
+    
+    post = Post.query.get_or_404(post_id)
+    if post.author != userid:
+        return redirect('/')  # 게시글의 작성자와 현재 로그인한 유저가 다르면 메인 페이지로 리다이렉트
+    
+    db.session.delete(post)
+    db.session.commit()
+    return redirect('/market')
+
 if __name__ == "__main__":
     basedir = os.path.abspath(os.path.dirname(__file__))  
     dbfile = os.path.join(basedir, 'db.sqlite') 
@@ -105,7 +147,8 @@ if __name__ == "__main__":
     app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True    
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False   
     app.config['SECRET_KEY']='asdfasdfasdfqwertx' #임의로 해시값 적용
-
+    app.config['WTF_CSRF_ENABLED'] = True
+    
     csrf = CSRFProtect(app)
     csrf.init_app(app)
 

@@ -10,8 +10,8 @@ class User(db.Model):
     userid = db.Column(db.String(32), unique=True, nullable=False)      
     username = db.Column(db.String(8), nullable=False)
     password = db.Column(db.String(8), nullable=False)     
-    account_balance = db.Column(db.Float, default=0.0)
-    coin_count = db.Column(db.Float, default=0.0)
+    account_balance = db.Column(db.Integer, nullable=False, default=0)
+    coin_count = db.Column(db.Integer, default=0)
     
 class Post(db.Model):
     __tablename__ = 'post'
@@ -21,3 +21,7 @@ class Post(db.Model):
     content = db.Column(db.Text, nullable=False)
     author = db.Column(db.String(32), nullable=False)
     date = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
