@@ -27,3 +27,11 @@ class Post(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+        
+#마켓 자체코인 정보        
+class Coin(db.Model):
+    __tablename__ = 'coin'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    marketCoin_count = db.Column(db.Integer, nullable=False, default=100)
+    market_price = db.Column(db.Integer, nullable=False, default=100)

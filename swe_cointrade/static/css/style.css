@@ -18,7 +18,8 @@ header {
 h1 {
   text-align: center;
   color: #f8f8f2;
-  margin-top: 50px;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
 }
 
 input[type="text"],
@@ -73,7 +74,7 @@ input[type="button"]:active {
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 5px;
-  width: 400px;
+  width: 450px;
   margin: 20px auto;
 }
 .post {
@@ -191,6 +192,16 @@ input[type="button"]:active {
   background-color: #2d974d;
 }
 
+.container {
+  overflow-y: auto;
+  height: 65vh;
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
 .delete-button {
   position: absolute;
   top: 10px;
@@ -255,4 +266,53 @@ footer {
   color: #ff5555;
   margin-bottom: 10px;
   font-size: 14px;
+}
+
+/*팝업 modal*/
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-dialog {
+  margin: 15% auto;
+  width: 80%;
+  max-width: 600px;
+}
+
+.modal-content {
+  background-color: #44475a;
+  padding: 20px;
+  border: 1px solid #888;
+  border-radius: 4px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.modal-title {
+  margin: 0;
+}
+
+.modal-body {
+  padding: 10px 0;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 10px;
+  border-top: 1px solid #ccc;
 }

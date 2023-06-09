@@ -31,3 +31,6 @@ class PostForm(FlaskForm):
     
 class DepositForm(FlaskForm):
     account_balance = IntegerField('account_balance', validators=[DataRequired()])
+
+class BuycoinForm(FlaskForm):
+    marketCoin_count = IntegerField('marketCoin_count', validators=[DataRequired()])
