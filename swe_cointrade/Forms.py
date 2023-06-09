@@ -27,7 +27,7 @@ class LoginForm(FlaskForm):
     
 class PostForm(FlaskForm):
     title = StringField('title', validators=[DataRequired()])
-    content = TextAreaField('content', validators=[DataRequired()])
+    price = IntegerField('price', validators=[DataRequired()])
     
 class DepositForm(FlaskForm):
     account_balance = IntegerField('account_balance', validators=[DataRequired()])

@@ -4,41 +4,17 @@
     <meta charset="UTF-8" />
     <title>게시물 작성</title>
     <link rel="stylesheet" href="static/css/style.css" />
+    <link href="static/img/main_logo_32.png" rel="icon" />
     <style>
-      .post-form {
-        background-color: #44475a;
-        padding: 20px;
-        box-sizing: border-box;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        width: 400px;
-        margin: 20px auto;
-      }
-      .post-form h3 {
+      .form h3 {
         margin-top: 0;
       }
-      .post-form input[type="text"],
-      .post-form textarea {
+      .form input[type="text"],
+      .form textarea {
         width: 100%;
         padding: 10px;
         box-sizing: border-box;
         margin-bottom: 10px;
-      }
-      .post-form button {
-        background-color: #2ecc71;
-        color: #f8f8f2;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 3px;
-        cursor: pointer;
-      }
-      .cancel-button {
-        background-color: red;
-        color: #f8f8f2;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 3px;
-        cursor: pointer;
       }
       .form-buttons {
         display: flex;
@@ -51,25 +27,52 @@
     </style>
     <script>
       function cancelPost() {
-        window.location.href = '/market';
+        window.location.href = "/market";
       }
+      window.addEventListener("DOMContentLoaded", function () {
+        var numberInput = document.getElementById("number");
+        var priceInput = document.getElementById("price");
+        var form = document.querySelector("form");
+
+        form.addEventListener("submit", function (event) {
+          // 숫자 갯수 제한
+          var numberValue = numberInput.value;
+          var numberCount = numberValue.replace(/[^0-9]/g, "").length;
+          if (numberCount > 5) {
+            event.preventDefault();
+            alert("가지고 계신 코인의 갯수안에서 설정하셔야 합니다.");
+            return;
+          }
+
+          // 판매가 범위 제한
+          var priceValue = priceInput.value;
+          var price = parseFloat(priceValue);
+          if (isNaN(price) || price <= 0) {
+            event.preventDefault();
+            alert("판매가는 정닥히 하세요");
+            return;
+          }
+        });
+      });
     </script>
   </head>
   <body>
-    <div class="post-form">
-      <h3>게시물 작성</h3>
+    <div class="form">
+      <h3>판매 게시물 작성</h3>
       <form action="/post" method="POST">
         {{ form.csrf_token }}
         <div>
-          <label for="title">제목</label>
-          <input type="text" name="title" id="title" required />
+          <label for="number">판매하실 코인의 갯수 : </label>
+          <input type="number" name="title" id="number" required />
         </div>
+        <br />
         <div>
-          <label for="content">내용</label>
-          <textarea name="content" id="content" rows="4" required></textarea>
+          <label for="price">판매가</label>
+          <input type="number" name="price" id="price" required />
         </div>
+        <br />
         <div class="form-buttons">
-          <button type="submit">게시하기</button>
+          <button type="submit" class="confirm-button">게시하기</button>
           <button class="cancel-button" onclick="cancelPost()">취소하기</button>
         </div>
       </form>

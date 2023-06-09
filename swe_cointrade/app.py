@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from models import Post, db, User
 from flask_wtf.csrf import CSRFProtect
 from Forms import PostForm, RegisterForm, LoginForm, DepositForm
+from flask_wtf import FlaskForm
 
 app = Flask(__name__)
 
@@ -81,7 +82,6 @@ def getMyInfo():
 @app.route('/deposit', methods=['GET', 'POST'])
 def deposit():
     userid = session.get('userid', None)
-    
     form = DepositForm()
     if form.validate_on_submit():
         if not userid:
@@ -99,30 +99,64 @@ def deposit():
     
     return render_template('deposit.html', form=form, userid=userid)
 
+#출금
+@app.route('/withdraw', methods=['GET', 'POST'])
+def withdraw():
+    userid = session.get('userid', None)
+    form = DepositForm()
+    if form.validate_on_submit():
+        if not userid:
+            return redirect('/login')
+        
+        user = User.query.filter_by(userid=userid).first()
+        
+        withdraw_amount = form.data.get('account_balance')
+        if user.account_balance is None or user.account_balance < withdraw_amount:
+            # account_balance가 None인 경우 또는 출금하려는 금액이 잔액보다 많은 경우 출금할 수 없음
+            return redirect('/mypage')
+        user.account_balance -= withdraw_amount
+        
+        db.session.commit()
+
+        return redirect('/mypage')
+    
+    if userid:
+        user = User.query.filter_by(userid=userid).first()
+        account_balance = user.account_balance if user.account_balance else 0
+    else:
+        account_balance = 0
+        
+    return render_template('withdraw.html', form=form, userid=userid, account_balance=account_balance)
+
+
+
 
 # 마켓 페이지
 @app.route('/market', methods=['GET'])
 def market_page():
     userid = session.get('userid', None)
     posts = Post.query.all()
-    return render_template('market.html', posts=posts)    
+    form = FlaskForm()
+    return render_template('market.html', posts=posts, userid=userid, form=form)    
 
 # 게시물 작성
 @app.route('/post', methods=['GET', 'POST'])
 def create_post():
+    userid = session.get('userid', None)
     form = PostForm()
     if form.validate_on_submit():
+        
         post = Post()
         post.title = form.data.get('title')
-        post.content = form.data.get('content')
+        post.price = form.data.get('price')
         post.author = session.get('userid')  # 작성자 정보 추가
 
         db.session.add(post)
         db.session.commit()
 
         return redirect('/market')
-
-    return render_template('post.html', form=form)
+        
+    return render_template('post.html', form=form, userid=userid)
 
 # 게시물 삭제
 @app.route('/post/<int:post_id>/delete', methods=['POST'])
@@ -137,7 +171,37 @@ def delete_post(post_id):
     
     db.session.delete(post)
     db.session.commit()
+    
     return redirect('/market')
+
+#마켓 코인 구매
+@app.route('/purchase/<int:post_id>', methods=['GET'])
+def purchase(post_id):
+    userid = session.get('userid', None)
+    if not userid:  # 유저가 로그인하지 않은 상태라면 메인 페이지로 리다이렉트
+        return redirect('/')
+    
+# 구매
+@app.route('/post/<int:post_id>/buy', methods=['POST'])
+def buy_post(post_id):
+    userid = session.get('userid', None)
+    if not userid:
+        return redirect('/')  # 유저가 로그인하지 않은 상태라면 메인 페이지로 리다이렉트
+    
+    post = Post.query.get_or_404(post_id)
+    user = User.query.filter_by(userid=userid).first()
+
+    if user.account_balance < post.price:
+        return redirect('/')  # 계정 잔고가 부족한 경우 메인 페이지로 리다이렉트
+    
+    user.account_balance -= post.price  # 계정 잔고 감소
+    user.coin_count += int(post.title)  # 코인 수 증가
+
+    db.session.delete(post)
+    db.session.commit()
+    
+    return redirect('/market')
+
 
 if __name__ == "__main__":
     basedir = os.path.abspath(os.path.dirname(__file__))  

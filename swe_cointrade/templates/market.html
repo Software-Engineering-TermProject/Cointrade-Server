@@ -5,6 +5,7 @@
     <title>코인 거래</title>
     <link href="static/img/main_logo_32.png" rel="icon" />
     <link rel="stylesheet" href="static/css/style.css" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <style>
       .container {
         display: flex;
@@ -13,47 +14,9 @@
         padding: 20px;
         box-sizing: border-box;
       }
-      .post {
-        position: relative;
-        width: 30%;
-        margin-bottom: 20px;
-        background-color: #44475a;
-        padding: 20px;
-        box-sizing: border-box;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-      }
-      .post h3 {
-        margin-top: 0;
-      }
-      .post p {
-        margin-bottom: 0;
-      }
-      .delete-button {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background-color: transparent;
-        border: none;
-        font-size: 15px;
-        cursor: pointer;
-      }
-      .xbox {
-        width: 15px;  
-        height: 15px;
-      }
-      .buy-button {
-        background-color: #2ecc71;
-        color: #f8f8f2;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 3px;
-        cursor: pointer;
-      }
       .new-post-link {
-        float: right;
-        margin-top: 10px;
-        margin-right: 10px;
+        text-decoration: none;
+        color: #f8f8f2;
       }
     </style>
   </head>
@@ -62,16 +25,16 @@
       <div class="header-wrapper">
         <div class="logo">
           <a href="/">
-            <img src="static/img/main_logo_32.png" alt="업비투 로고" />
+            <img src="static/img/coin.png" alt="업비투 로고" />
             업비투
           </a>
         </div>
-        <div class="user-info">
-          <a href="#">
-            <img src="static/img/user_32.png" alt="유저 이미지" />
-          </a>
+        <div class="post-link">
+          <a class="new-post-link" href="/post"
+            ><img src="static/img/sell.png" style="height: 32px" /> 게시물
+            작성</a
+          >
         </div>
-        <a class="new-post-link" href="/post">게시물 작성</a>
       </div>
     </header>
     <div class="container">
@@ -79,18 +42,46 @@
       <div class="post">
         {% if post.author == userid %}
         <form class="xbox" action="{{ url_for('delete_post', post_id=post.id) }}" method="POST">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          {{ form.csrf_token }}
           <input class="delete-button" type="submit" value="X" />
         </form>
         {% endif %}
-        <h3>{{ post.title }}</h3>
-        <p>{{ post.content }}</p>
+        <h3>[판매중]{{ post.title }}개</h3>
+        <p>{{ post.price }}원</p>
         <p>Posted by: {{ post.author }}</p>
         <p>Date: {{ post.date }}</p>
-        <a href="/"><button class="buy-botton">사기</button></a>
+        <a>
+          <button type="button" class="confirm-button" data-toggle="modal" data-target="#purchaseModal{{ post.id }}">
+            구매</button>
+        </a>
+        <div class="modal fade" id="purchaseModal{{ post.id }}" tabindex="-1" role="dialog" aria-labelledby="purchaseModalLabel{{ post.id }}" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="purchaseModalLabel{{ post.id }}">구매 확인</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                {{ post.title }}을 구매하시겠습니까?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                <form action="{{ url_for('buy_post', post_id=post.id) }}" method="POST" style="display: inline;">
+                  {{ form.csrf_token }}
+                  <input class="btn btn-primary" type="submit" value="구매" />
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       {% endfor %}
     </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <footer>
       Software Engineering and Practice Team_6 <br />여재우 김동재
     </footer>
