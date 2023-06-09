@@ -42,20 +42,20 @@
         style="display: flex; justify-content: space-between"
       >
         <div class="login-button" style="margin-right: auto">
-          <a href="/market">
+          <a href="/market" style="font-size: 28px">
             <img
               src="static/img/trade.png"
               alt="거래"
-              style="height: 20px"
+              style="height: 32px"
             />코인 마켓
           </a>
         </div>
         <div class="login-button">
-          <a href="/mypage">
+          <a href="/mypage" style="font-size: 28px">
             <img
               src="static/img/user.png"
               alt="유저"
-              style="height: 20px"
+              style="height: 32px"
             />내정보
           </a>
         </div>
@@ -76,8 +76,8 @@
       {%if userid%}
       <div class="market_trade">
         <h3>마켓에서 거래하기</h3>
-        <div>남아있는 코인:</div>
-      </div>
+        <div>남아있는 코인 : <span id="remaining_coins">{{ remaining_coins }}</span></div><br>
+        <a href="/buyAtMarket"><button class="confirm-button">구매</button></a>
       {%else%} {%endif%}
     </div>
 

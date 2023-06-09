@@ -5,7 +5,7 @@
     <title>코인 거래</title>
     <link href="static/img/main_logo_32.png" rel="icon" />
     <link rel="stylesheet" href="static/css/style.css" />
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
     <style>
       .container {
         display: flex;
@@ -45,15 +45,16 @@
           {{ form.csrf_token }}
           <input class="delete-button" type="submit" value="X" />
         </form>
-        {% endif %}
-        <h3>[판매중]{{ post.title }}개</h3>
-        <p>{{ post.price }}원</p>
-        <p>Posted by: {{ post.author }}</p>
-        <p>Date: {{ post.date }}</p>
+        {% else %}
         <a>
           <button type="button" class="confirm-button" data-toggle="modal" data-target="#purchaseModal{{ post.id }}">
             구매</button>
         </a>
+        {% endif %}
+        <h3>[판매중] {{ post.title }}개</h3>
+        <p>{{ post.price }}원</p>
+        <p>Posted by: {{ post.author }}</p>
+        <p>Date: {{ post.date }}</p>
         <div class="modal fade" id="purchaseModal{{ post.id }}" tabindex="-1" role="dialog" aria-labelledby="purchaseModalLabel{{ post.id }}" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -64,14 +65,14 @@
                 </button>
               </div>
               <div class="modal-body">
-                {{ post.title }}을 구매하시겠습니까?
+                {{ post.title }} 개를 구매하시겠습니까?
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
                 <form action="{{ url_for('buy_post', post_id=post.id) }}" method="POST" style="display: inline;">
                   {{ form.csrf_token }}
                   <input class="btn btn-primary" type="submit" value="구매" />
                 </form>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
               </div>
             </div>
           </div>

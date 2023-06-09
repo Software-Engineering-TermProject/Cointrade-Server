@@ -1,17 +1,68 @@
 import os
 from flask import Flask, render_template, request, redirect, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from models import Post, db, User
+from models import Coin, Post, db, User
 from flask_wtf.csrf import CSRFProtect
-from Forms import PostForm, RegisterForm, LoginForm, DepositForm
+from Forms import BuycoinForm, PostForm, RegisterForm, LoginForm, DepositForm
 from flask_wtf import FlaskForm
 
 app = Flask(__name__)
 
+#메인페이지
 @app.route('/')
 def main_page():
     userid = session.get('userid', None)
-    return render_template('main.html', userid = userid)
+    form = BuycoinForm()
+
+    if userid:
+        user = User.query.filter_by(userid=userid).first()
+        coin = Coin.query.get(1)
+        remaining_coins = coin.marketCoin_count
+    else:
+        remaining_coins = None
+
+    return render_template('main.html', form=form, userid=userid, remaining_coins=remaining_coins)
+
+#마켓에서 코인구매
+@app.route('/buyAtMarket', methods=['GET','POST'])
+def buy_coin():
+    userid = session.get('userid', None)
+    if userid is None:
+        return redirect('/login')
+    
+    if request.method == 'GET':
+        # Show the form page
+        return render_template('buyatmarket.html')
+    else:
+        coin_to_buy = int(request.form.get('coin_to_buy'))
+        
+        # 유효한 coin_id와 coin_to_buy를 받았는지 확인
+        if not coin_to_buy or coin_to_buy <= 0:
+            return "유효한 구매할 코인 수를 입력하세요.", 400
+
+        coin = Coin.query.get(1)
+        
+        # 존재하는 코인인지 확인
+        if coin is None:
+            return "유효하지 않은 코인입니다.", 400
+        
+        user = User.query.filter_by(userid=userid).first()
+
+        if coin.marketCoin_count < coin_to_buy:
+            return "마켓에 충분한 코인이 없습니다.", 400
+
+        if user.account_balance < coin_to_buy * coin.market_price:
+            return "잔액이 부족합니다.", 405
+
+        user.account_balance -= coin_to_buy * coin.market_price
+        coin.marketCoin_count -= coin_to_buy
+        user.coin_count += coin_to_buy
+
+        db.session.commit()
+
+        return redirect('/')
+
+
 
 #회원가입
 @app.route('/register', methods = ['GET', 'POST'])
@@ -22,8 +73,11 @@ def register():
         user.userid = form.data.get('userid')
         user.username = form.data.get('username')
         user.password = form.data.get('password')
-
         db.session.add(user) #DB저장
+
+        coin = Coin(marketCoin_count=100, market_price=100)
+        db.session.add(coin)
+
         db.session.commit() #변동사항 반영
         
         return redirect('/login') 
@@ -220,5 +274,10 @@ if __name__ == "__main__":
     db.app = app
     with app.app_context():
         db.create_all()  
+        
+        if Coin.query.get(1) is None:
+            coin = Coin(marketCoin_count=100, market_price=100)
+            db.session.add(coin)
+            db.session.commit()
 
     app.run(host='127.0.0.1', port=5000, debug=True) 

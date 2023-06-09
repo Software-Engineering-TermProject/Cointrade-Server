@@ -9,13 +9,6 @@
       .form h3 {
         margin-top: 0;
       }
-      .form input[type="text"],
-      .form textarea {
-        width: 100%;
-        padding: 10px;
-        box-sizing: border-box;
-        margin-bottom: 10px;
-      }
       .form-buttons {
         display: flex;
         justify-content: flex-end;
@@ -49,7 +42,7 @@
           var price = parseFloat(priceValue);
           if (isNaN(price) || price <= 0) {
             event.preventDefault();
-            alert("판매가는 정닥히 하세요");
+            alert("판매가는 적절히 하세요");
             return;
           }
         });
