@@ -5,18 +5,16 @@ body {
   font-family: sans-serif;
   color: #f8f8f2;
   overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
 header {
-  background-color: #282a36;
-  height: 70px;
-}
-form {
-  margin: 0 auto;
-  width: 300px;
   background-color: #44475a;
-  padding: 20px;
+  height: 10%;
   border-radius: 5px;
 }
+
 h1 {
   text-align: center;
   color: #f8f8f2;
@@ -68,6 +66,35 @@ input[type="button"]:active {
   background-color: #c33228;
 }
 
+/* foam 테마 로그인, 회원가입, 게시물작성*/
+.form {
+  background-color: #44475a;
+  padding: 20px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 400px;
+  margin: 20px auto;
+}
+.post {
+  position: relative;
+  width: 30%;
+  margin-bottom: 20px;
+  background-color: #44475a;
+  padding: 20px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.form h1 {
+  margin-top: 0;
+}
+.post h1 {
+  margin-top: 0;
+}
+.post p {
+  margin-bottom: 0;
+}
 .form-footer {
   display: flex;
   justify-content: space-between;
@@ -143,44 +170,11 @@ input[type="button"]:active {
 
 .logo img {
   margin-right: 10px;
+  height: 32px;
+  width: 32px;
 }
 
-.user-info {
-  display: none;
-}
-
-.user-info .user-image {
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  margin-left: 10px;
-}
-
-.user-info .login-button {
-  background-color: #50fa7b;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-  margin-right: 20px;
-}
-
-.user-info .login-button:hover {
-  background-color: #34d058;
-}
-
-.user-info .login-button:active {
-  background-color: #2d974d;
-}
-
-.mypage_container {
-  background-color: #44475a;
-  border-radius: 5px;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.transaction-button {
+.confirm-button {
   background-color: #2ecc71;
   color: #f8f8f2;
   padding: 10px 20px;
@@ -189,12 +183,45 @@ input[type="button"]:active {
   cursor: pointer;
 }
 
-.transaction-button:hover {
-  background-color: #29b765;
+.confirm-button:hover {
+  background-color: #34d058;
 }
 
-.transaction-button:active {
-  background-color: #279e5f;
+.confirm-button:active {
+  background-color: #2d974d;
+}
+
+.delete-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.xbox {
+  width: 10px;  
+  height: 10px;
+}
+
+.cancel-button {
+  background-color: #e74c3c;
+  color: #f8f8f2;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: #cf4339;
+}
+
+.cancel-button:active {
+  background-color: #c33228;
 }
 
 .button-container {
@@ -212,9 +239,9 @@ input[type="button"]:active {
   margin-bottom: 20px;
 }
 
-/*전체적인 footer 테마*/
+/*footer 테마*/
 footer {
-  position: static;
+  position: fixed;
   bottom: 0;
   width: 100%;
   text-align: center;

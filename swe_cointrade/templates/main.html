@@ -22,7 +22,7 @@
       <div class="header-wrapper">
         <div class="logo">
           <a href="/">
-            <img src="static/img/main_logo_32.png" alt="업비투 로고" />
+            <img src="static/img/coin.png" alt="업비투 로고" />
             업비투
           </a>
         </div>
@@ -36,31 +36,33 @@
       </div>
     </header>
     <div class="mypage">
-      {%if userid%}
-      <div id="userInfoContainer1" style="display: flex">
-        <!--로그인 하면 보여주는 내용-->
-        <div class="login-button">
-          <a href="/mypage"
-            ><img
-              src="static/img/user.png"
-              alt="유저"
-              style="height: 20px"
-            />Mypage</a
-          >
-        </div>
-        <div class="login-button">
-          <a href="/market"
-            ><img
+      {% if userid %}
+      <div
+        id="userInfoContainer1"
+        style="display: flex; justify-content: space-between"
+      >
+        <div class="login-button" style="margin-right: auto">
+          <a href="/market">
+            <img
               src="static/img/trade.png"
               alt="거래"
               style="height: 20px"
-            />Coin Trade Market</a
-          >
+            />코인 마켓
+          </a>
+        </div>
+        <div class="login-button">
+          <a href="/mypage">
+            <img
+              src="static/img/user.png"
+              alt="유저"
+              style="height: 20px"
+            />내정보
+          </a>
         </div>
       </div>
-      {%else%}
+      {% else %}
       <div id="userInfoContainer2"><a href="/login">로그인</a>을 해주세요.</div>
-      {%endif%}
+      {% endif %}
     </div>
     <div class="container">
       <div class="dashboard">
@@ -70,7 +72,7 @@
       </div>
     </div>
     <br />
-    <div class="mypage">
+    <div class="container">
       {%if userid%}
       <div class="market_trade">
         <h3>마켓에서 거래하기</h3>
@@ -145,9 +147,7 @@
       chart.render();
     </script>
     <footer class="footer">
-      <div class="container">
-        Software Engineering and Practice Team_6 <br />여재우 김동재
-      </div>
+      Software Engineering and Practice Team_6 <br />여재우 김동재
     </footer>
   </body>
 </html>
