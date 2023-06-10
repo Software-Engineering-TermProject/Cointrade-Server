@@ -40,6 +40,10 @@
     <div class="container">
       {% for post in posts %}
       <div class="post">
+        <h3>[판매중] {{ post.title }}개</h3>
+        <p>{{ post.price }}원</p>
+        <p>Posted by: {{ post.author }}</p>
+        <p>Date: {{ post.date }}</p>
         {% if post.author == userid %}
         <form class="xbox" action="{{ url_for('delete_post', post_id=post.id) }}" method="POST">
           {{ form.csrf_token }}
@@ -51,10 +55,7 @@
             구매</button>
         </a>
         {% endif %}
-        <h3>[판매중] {{ post.title }}개</h3>
-        <p>{{ post.price }}원</p>
-        <p>Posted by: {{ post.author }}</p>
-        <p>Date: {{ post.date }}</p>
+        
         <div class="modal fade" id="purchaseModal{{ post.id }}" tabindex="-1" role="dialog" aria-labelledby="purchaseModalLabel{{ post.id }}" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
