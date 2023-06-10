@@ -82,11 +82,14 @@
     </div>
 
     <script>
+      let purchase_prices = JSON.parse('{{ purchase_prices | safe }}');
+      let purchase_timestamps = JSON.parse('{{ purchase_timestamps | safe }}').map(t => Date.parse(t) / 1000); 
+
       var options = {
         series: [
           {
             name: "Bitcoin",
-            data: [100],
+            data: purchase_prices.map((price, i) => [purchase_timestamps[i], price]),
           },
         ],
         chart: {
@@ -99,16 +102,7 @@
         },
         xaxis: {
           type: "datetime",
-          categories: [
-            "2023-06-01",
-            "2023-06-02",
-            "2023-06-03",
-            "2023-06-04",
-            "2023-06-05",
-            "2023-06-06",
-            "2023-06-07",
-            "2023-06-08",
-          ],
+          categories: purchase_timestamps,
           labels: {
             style: {
               colors: "#f8f8f2",
