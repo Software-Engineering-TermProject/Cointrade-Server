@@ -18,7 +18,18 @@
             document.getElementById("account-balance").textContent =
               info.account_balance;
             document.getElementById("coin-count").textContent = info.coin_count;
-            document.getElementById("coin-price").textContent = info.coin_price;
+
+            // 코인 가격 정보를 가져오는 API 호출
+            axios
+            .get("/getMarketPrice")
+            .then(function (response) {
+              var marketPrice = response.data;
+              document.getElementById("coin-price").textContent = marketPrice;
+            })
+            .catch(function (error) {
+              console.error(error);
+            });
+
             document.getElementById("estimated-assets").textContent =
               info.estimated_assets;
           })

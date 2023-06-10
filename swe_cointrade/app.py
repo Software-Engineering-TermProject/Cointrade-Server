@@ -23,7 +23,7 @@ def main_page():
 
     return render_template('main.html', form=form, userid=userid, remaining_coins=remaining_coins)
 
-#마켓에서 코인구매
+#마켓 자체 코인구매
 @app.route('/buyAtMarket', methods=['GET','POST'])
 def buy_coin():
     userid = session.get('userid', None)
@@ -132,6 +132,11 @@ def getMyInfo():
     
     return jsonify(info)
 
+@app.route('/getMarketPrice', methods=['GET'])
+def get_market_price():
+    coin = Coin.query.get(1)
+    return jsonify(coin.market_price)
+
 #입금
 @app.route('/deposit', methods=['GET', 'POST'])
 def deposit():
@@ -189,8 +194,12 @@ def withdraw():
 @app.route('/market', methods=['GET'])
 def market_page():
     userid = session.get('userid', None)
-    posts = Post.query.all()
     form = FlaskForm()
+    if userid:
+        posts = Post.query.all()
+    else:
+        posts = []
+    
     return render_template('market.html', posts=posts, userid=userid, form=form)    
 
 # 게시물 작성
@@ -244,12 +253,16 @@ def buy_post(post_id):
     
     post = Post.query.get_or_404(post_id)
     user = User.query.filter_by(userid=userid).first()
+    coin = Coin.query.get(1)
 
     if user.account_balance < post.price:
         return redirect('/')  # 계정 잔고가 부족한 경우 메인 페이지로 리다이렉트
     
     user.account_balance -= post.price  # 계정 잔고 감소
     user.coin_count += int(post.title)  # 코인 수 증가
+
+     # 코인 시세를 구매한 게시물의 코인 가격으로 업데이트
+    coin.market_price = post.price
 
     db.session.delete(post)
     db.session.commit()
@@ -274,6 +287,20 @@ if __name__ == "__main__":
     db.app = app
     with app.app_context():
         db.create_all()  
+        
+        dummy_posts = [
+            {'title': '10', 'price': 130, 'author': 'User1'},
+            {'title': '25', 'price': 250, 'author': 'User2'},
+            {'title': '18', 'price': 300, 'author': 'User3'},
+        ]
+        for dummy_post in dummy_posts:
+            if not Post.query.filter_by(title=dummy_post['title'], author=dummy_post['author']).first():
+                post = Post()
+                post.title = dummy_post['title']
+                post.price = dummy_post['price']
+                post.author = dummy_post['author']
+                db.session.add(post)
+
         
         if Coin.query.get(1) is None:
             coin = Coin(marketCoin_count=100, market_price=100)
